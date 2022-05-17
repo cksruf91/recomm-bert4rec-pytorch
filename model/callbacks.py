@@ -115,6 +115,6 @@ class MlflowLogger:
          WHERE run_uuid = '{self.run_id}'
            AND key = 'mlflow.log-model.history'
         '''
-        with sqlite3.connect('/Users/changyeol/mydb.sqlite') as conn:  # sqlite:///mydb.sqlite
+        with sqlite3.connect('/home/ec2-user/mydb.sqlite') as conn:  # sqlite:///mydb.sqlite
             cur = conn.cursor()
             cur.execute(sql)

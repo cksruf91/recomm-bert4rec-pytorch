@@ -116,8 +116,8 @@ def last_session_test_split(df: DataFrame, user_col: str, time_col: str) -> Tupl
 def movielens_preprocess(interactions, items, users):
     interactions.sort_values(['UserID', 'Timestamp'], inplace=True)
 
-    item_count = interactions.groupby('MovieID')['Rating'].transform('count')
-    interactions = interactions[item_count > 3].copy()
+    # item_count = interactions.groupby('MovieID')['Rating'].transform('count')
+    # interactions = interactions[item_count > 3].copy()
 
     # MovieID -> item_id
     movie_ids = set(interactions['MovieID'].unique().tolist())
@@ -141,7 +141,7 @@ def movielens_preprocess(interactions, items, users):
 
     # train test split
     train, test = last_session_test_split(interactions, user_col='user_id', time_col='Timestamp')
-    test['negative_sample'] = get_negative_samples(train, test)
+    test['negative_sample'] = get_negative_samples(train, test, n_sample=99, method='random')
 
     # create PAD, MASK id 
     token_ids = pd.DataFrame.from_dict(
@@ -150,10 +150,8 @@ def movielens_preprocess(interactions, items, users):
          'Genres':['[PAD]', '[MASK]'], 
          'item_id':[0, int(items['item_id'].max() + 1)]}
     )
-    items = pd.concat(
-        [items, token_ids]
-    )
-    
+    items = pd.concat([items, token_ids])
+
     return train, test, items, users
 
 

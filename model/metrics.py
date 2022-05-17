@@ -47,7 +47,11 @@ class nDCG(Metrics):
         Returns:
             float: ndcg
         """
-        hits = np.array(output) == np.array(label).reshape(-1, 1)
+        output = np.array(output)
+        label = np.array(label).reshape(-1, 1)
+        assert len(output) == len(label)
+        
+        hits = output == label
         k = np.array(output).shape[-1]
         dcg_weight = 1 / np.log2(np.arange(2, k + 2))
 
